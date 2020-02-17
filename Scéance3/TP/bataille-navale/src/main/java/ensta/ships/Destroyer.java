@@ -10,7 +10,10 @@ public class Destroyer extends AbstractShip {
      * @return default constructor that initializes size at 2 and dir at EAST
      */
     public Destroyer(){
-        super("",'c',2,Direction.EAST);
+        super("",'d',2,Direction.EAST);
+    }
+    public Destroyer(String name){
+        super(name,'d',2,Direction.EAST);
     }
     public String toString(){
         return this.name + " " + this.label + " " + this.size + " " + this.dir;

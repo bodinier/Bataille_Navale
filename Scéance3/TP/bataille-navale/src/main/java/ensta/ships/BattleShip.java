@@ -10,7 +10,13 @@ public class BattleShip extends AbstractShip {
      * @return default constructor that initializes size at 2 and dir at EAST
      */
     public BattleShip(){
-        super("",'c',4,Direction.EAST);
+        super("",'b',4,Direction.EAST);
+    }
+    /**
+     * @return default constructor that initializes size at 2 and dir at EAST
+     */
+    public BattleShip(String name){
+        super(name,'b',4,Direction.EAST);
     }
 
     public String toString(){
