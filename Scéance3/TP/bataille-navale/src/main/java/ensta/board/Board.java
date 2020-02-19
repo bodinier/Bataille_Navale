@@ -1,5 +1,6 @@
 package ensta.board;
 import ensta.ships.*;
+import ensta.InputHelper;
 
 public class Board implements IBoard {
     private char[][] navires;
@@ -28,49 +29,54 @@ public class Board implements IBoard {
 
         //On affiche les noms des tableaux
         System.out.print("Navires");
-        for (int i =0; i<3*size+1;i++ )
+        for (int i =0; i<4*size+1;i++ )
         {
             System.out.print(" ");
         }
-        System.out.println("Frappes");
+        System.out.println(" Frappes");
         for (int i=0; i<size+1; i++){
             if (i==0)
-                System.out.print("   ");
+                System.out.print("    ");
             else
-                System.out.print((char)(64+i) + "  ");
+                System.out.print(" "+(char)(64+i) + "  ");
         }
-        System.out.print("     ");
+        System.out.print("       ");
         for (int i=0; i<size+1; i++){
             if (i==0)
                 System.out.print("   ");
             else
-                System.out.print((char)(64+i) + "  ");
+                System.out.print(" "+(char)(64+i) + "  ");
         }
 
         // Affichage des tableaux :
         System.out.println("");
         for (int i =0; i<size; i++)
         {
+            if (i<9)
+                System.out.print(i+1 + "   ");
+            else if (i>=9)
             System.out.print(i+1 + "  ");
-
             // Navires :
             for (int j=0; j<size; j++)
             {
                 if (navires[i][j] != '\0')
-                    System.out.print(navires[i][j] + "  ");
+                    System.out.print(" "+navires[i][j] + "  ");
                 else 
-                    System.out.print("." + "  ");
+                    System.out.print(" ." + "  ");
             }
             System.out.print("     ");
+            if (i<9)
+                System.out.print(i+1 + "   ");
+            else if (i>=9)
             System.out.print(i+1 + "  ");
             
             //Frappes : 
             for (int j=0; j<size; j++)
             {
                 if (frappes[i][j])
-                    System.out.print("X" + "  ");
+                    System.out.print(" X" + " ");
                 else 
-                    System.out.print("." + "  ");
+                    System.out.print("  ." + " ");
 
             }
             System.out.println("");
@@ -150,5 +156,31 @@ public class Board implements IBoard {
     public boolean getHit(int x, int y){
         return (frappes[x][y]);
         
+    }
+
+    public boolean moveIsValid(int x,int y, AbstractShip ship, String dir ){
+        int length = ship.getSize();
+        if (0<= x && x <= (this.getSize()+1) && 0 <= y && y <= (this.getSize()+1) && !this.hasShip(x-1, y-1))
+            {
+                switch (dir){
+                    case "n" :
+                        if (x-length >= 0)
+                            return true;
+                        break;
+                    case "s" :
+                        if (x+length <= this.getSize()+1)
+                            return true;
+                        break;
+                    case "e" :
+                        if (y+length <= this.getSize()+1)
+                            return true;
+                        break;
+                    case "w" :
+                        if (y-length >= 0)
+                            return true;
+                     break;
+                }
+            }
+        return false;
     }
 }

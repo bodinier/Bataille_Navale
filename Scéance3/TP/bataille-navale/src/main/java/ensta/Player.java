@@ -31,7 +31,7 @@ public class Player {
     /**
      * Read keyboard input to get ships coordinates. Place ships on given coodrinates.
      */
-    public void putShips() {
+    public void putShips(Board board) {
         boolean done = false;
         int i = 0;
 
@@ -39,7 +39,7 @@ public class Player {
             AbstractShip s = ships[i];
             String msg = String.format("placer %d : %s(%d)", i + 1, s.getName(), s.getSize());
             System.out.println(msg);
-            InputHelper.ShipInput res = InputHelper.readShipInput();
+            InputHelper.ShipInput res = InputHelper.readShipInput(board, s);
             switch (res.orientation){
                 case "n" : 
                     s.setDirection(Direction.NORTH);

@@ -1,6 +1,9 @@
 package ensta;
 import java.util.Arrays;
 import java.util.Scanner;
+import javax.script.AbstractScriptEngine;
+import ensta.board.*;
+import ensta.ships.*;
 
 public final class InputHelper {
 
@@ -37,7 +40,7 @@ public final class InputHelper {
     /* **
      * Méthodes de la classe InputHelper
      */
-    public static ShipInput readShipInput() {
+    public static ShipInput readShipInput(Board board, AbstractShip ship) {
         @SuppressWarnings("resource")
         Scanner sin = new Scanner(System.in);
         ShipInput res = new ShipInput();
@@ -51,9 +54,10 @@ public final class InputHelper {
                     String coord = in[0];
                     if (Arrays.asList(validOrientations).contains(in[1])) {
                         res.orientation = in[1];
-                        res.x = coord.charAt(0) - 'a';
-                        res.y = Integer.parseInt(coord.substring(1, coord.length())) - 1;
-                        done = true;
+                        res.y = (int)(coord.charAt(0) - 'a'+1);
+                        res.x = Integer.parseInt(coord.substring(1, coord.length()));
+                        if (board.moveIsValid(res.x, res.y, ship, res.orientation))
+                            done = true;
                     }
                 }
             } catch (Exception e) {
