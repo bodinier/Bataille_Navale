@@ -5,21 +5,16 @@ import ensta.ships.*;
 
 import java.util.ArrayList;
 
-import ensta.InputHelper.ShipInput;
-
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
     {
-        boolean test = false;
+        boolean test = true;
+        
         // Init :
         if (!test){
-        Board myBoard = new Board("myBoard", 10);
-        Board opponentBoard = new Board("opponentBoard", 10);
+        Board myBoard = new Board("myBoard", 8);
+        Board opponentBoard = new Board("opponentBoard", 8);
         Destroyer destroyer = new Destroyer("destroyer");
         BattleShip battleShip = new BattleShip("battleship");
         Submarine submarine1 = new Submarine("submarine 1");
@@ -33,19 +28,16 @@ public class App
         shipList.add(carrier);
         
         Player player = new Player(myBoard, opponentBoard, shipList);
-        player.putShips(myBoard);}
+        player.putShips(myBoard);
+    }
+
         if (test){
             Board myBoard = new Board("myBoard", 8);
+            Carrier carrier = new Carrier("black pearl", 'd', Direction.EAST);
+            myBoard.putShip(carrier, 2, 3);
+            myBoard.setHit(true, 5, 3);
+            myBoard.setHit(true, 2, 3);
             myBoard.print();
-            /*System.out.println(myBoard.getSize());
-            Carrier carrier1 = new Carrier("carrier", 'c', Direction.NORTH);
-            System.out.println(myBoard.moveIsValid(5, 1, carrier1, "n"));
-            Carrier carrier2 = new Carrier("carrier", 'c', Direction.SOUTH);
-            System.out.println(myBoard.moveIsValid(6, 5, carrier2, "s"));
-            Carrier carrier3 = new Carrier("carrier", 'c', Direction.EAST);
-            System.out.println(myBoard.moveIsValid(1, 7, carrier3, "e"));
-            Carrier carrier4 = new Carrier("carrier", 'c', Direction.WEST);
-            System.out.println(myBoard.moveIsValid(2, 5, carrier4, "w"));*/
         }
     }
 }

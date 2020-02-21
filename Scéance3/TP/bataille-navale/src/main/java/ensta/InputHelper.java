@@ -1,7 +1,6 @@
 package ensta;
 import java.util.Arrays;
 import java.util.Scanner;
-import javax.script.AbstractScriptEngine;
 import ensta.board.*;
 import ensta.ships.*;
 
@@ -37,8 +36,9 @@ public final class InputHelper {
         }
     }
 
-    /* **
-     * Méthodes de la classe InputHelper
+    /**
+     * @param board where to place the ship
+     * @param ship to be placed
      */
     public static ShipInput readShipInput(Board board, AbstractShip ship) {
         @SuppressWarnings("resource")

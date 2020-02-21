@@ -1,4 +1,6 @@
 package ensta.board;
+
+import ensta.Hit;
 import ensta.ships.*;
 
 public interface IBoard { 
@@ -40,4 +42,11 @@ public interface IBoard {
      * @return true if the hit is successful
      */
     boolean getHit(int x, int y);
+
+    /**
+    * Sends a hit at the given position
+    * @param x
+    * @param y
+    * @return status for the hit (eg : strike or miss) */
+    public Hit sendHit(int x, int y);
 }

@@ -5,6 +5,7 @@ abstract public class AbstractShip{
     protected String name;
     protected int size;
     protected Direction dir;
+    protected int strikeCount;
 
     public AbstractShip(String cname, char clabel, int csize, Direction cdir){
         this.name = cname;
@@ -45,4 +46,19 @@ abstract public class AbstractShip{
         this.dir = newDir;
     }
 
+    public void addStrike(){
+        this.strikeCount ++;
+        if (this.isSunk()){
+            System.out.println(this.name + " is sunk !");
+        }
+        
+    }
+
+    public boolean isSunk(){
+        if (strikeCount >= size){
+            return true;
+        }
+        else 
+            return false;
+    }
 }

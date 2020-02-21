@@ -1,31 +1,35 @@
 package ensta.board;
+//import org.omg.CORBA.portable.ValueFactory;
+
+import ensta.ColorUtil;
+import ensta.Hit;
+import ensta.ColorUtil.Color;
 import ensta.ships.*;
-import ensta.InputHelper;
 
 public class Board implements IBoard {
-    private char[][] navires;
-    private boolean[][] frappes;
-    String name;
+
+    private ShipState[][] navires;
+    private Boolean[][] frappes;
+    private String name;
 
     public Board(String bname, int bsize){
         this.name = bname;
-        char[][] tab = new char[bsize][bsize];
-        boolean[][] frap = new boolean[bsize][bsize];
+        ShipState[][] tab = new ShipState[bsize][bsize];
+        Boolean[][] frap = new Boolean[bsize][bsize];
         this.navires = tab;
         this.frappes = frap;
     }
 
     public Board(String bname){
         this.name = bname;
-        char[][] tab = new char[10][10];
-        boolean[][] frap = new boolean[10][10];
+        ShipState[][] tab = new ShipState[10][10];
+        Boolean[][] frap = new Boolean[10][10];
         this.navires = tab;
         this.frappes = frap;
     }
 
     public void print(){
         int size = navires.length;
-        System.out.println(this.name + "\n");
 
         //On affiche les noms des tableaux
         System.out.print("Navires");
@@ -59,8 +63,8 @@ public class Board implements IBoard {
             // Navires :
             for (int j=0; j<size; j++)
             {
-                if (navires[i][j] != '\0')
-                    System.out.print(" "+navires[i][j] + "  ");
+                if (navires[i][j] != null)
+                    System.out.print(" " + navires[i][j].toString() + "  ");
                 else 
                     System.out.print(" ." + "  ");
             }
@@ -73,10 +77,16 @@ public class Board implements IBoard {
             //Frappes : 
             for (int j=0; j<size; j++)
             {
-                if (frappes[i][j])
-                    System.out.print(" X" + " ");
-                else 
+                if (frappes[i][j] != null){
+                    if (frappes[i][j].booleanValue() && this.hasShip(i, j)){
+                        System.out.print("  " + ColorUtil.colorize("X", Color.RED) + " ");
+                    }
+                    else 
+                        System.out.print("  " + ColorUtil.colorize("X", Color.WHITE) + " ");
+                }
+                else {
                     System.out.print("  ." + " ");
+                }
 
             }
             System.out.println("");
@@ -97,15 +107,16 @@ public class Board implements IBoard {
     public void putShip(AbstractShip ship, int x, int y){
         int size = ship.getSize();
         Direction dir = ship.getDirection();
-        char label = ship.getLabel();
         x--;
         y--;
         switch (dir){
             case NORTH :
                 for (int i=0; i<size; i++)
                 {
-                    if ((x-i >= 0) && (navires[x-i][y] == '\0'))
-                        navires[x-i][y] = label;
+                    if ((x-i >= 0) && (navires[x-i][y] == null))
+                    {
+                        navires[x-i][y]= new ShipState(ship) ;
+                    }
                     else 
                         System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + (x-i) +";"+ y +")");
                 }
@@ -113,8 +124,8 @@ public class Board implements IBoard {
             case SOUTH :
                 for (int i=0; i<size; i++)
                 {
-                    if ( (x+i <= this.getSize() ) && (navires[x+i][y] == '\0'))
-                        navires[x+i][y] = label;
+                    if ( (x+i <= this.getSize() ) && (navires[x+i][y] == null))
+                        navires[x+i][y]= new ShipState(ship);
                     else 
                         System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + (x+i) +";"+ y +")");
                 }
@@ -122,8 +133,9 @@ public class Board implements IBoard {
             case EAST :
                 for (int i=0; i<size; i++)
                 {
-                    if ( (y+i <= this.getSize() ) && (navires[x][y+i] == '\0'))
-                        navires[x][y+i] = label;
+                    if ( (y+i <= this.getSize() ) && (navires[x][y+i] == null)){
+                        navires[x][y+i] = new ShipState(ship);
+                    }
                     else 
                         System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + x +";"+ (y+i) +")");
                 }
@@ -131,8 +143,8 @@ public class Board implements IBoard {
             case WEST :
                 for (int i=0; i<size; i++)
                 {
-                    if ((y-i >= 0)&&(navires[x][y-i] == '\0'))
-                        navires[x][y-i] = label;
+                    if ((y-i >= 0)&&(navires[x][y-i] == null))
+                        navires[x][y-i]= new ShipState(ship);
                     else 
                         System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + x + ";" + (y-i) +")");
                 }
@@ -142,22 +154,40 @@ public class Board implements IBoard {
 
     @Override
     public boolean hasShip(int x, int y){
-        return (navires[x][y] != '\0') ? true : false;
+        return (navires[x][y] != null) ? true : false;
     }
 
     @Override
     public void setHit(boolean hit, int x, int y){
         x--;
         y--;
-        frappes[x][y] = hit;
+        if (hit)   
+            this.frappes[x][y] = true;
+        else 
+            this.frappes[x][y] = false;
+        if (this.hasShip(x, y)){
+            this.navires[x][y].addStrike();
+        }
     }
-
+    /**
+     * @param x
+     * @param y
+     * @return true if there is a hit at (x,y)
+     */
     @Override
     public boolean getHit(int x, int y){
-        return (frappes[x][y]);
+        return (frappes[x][y].booleanValue());
         
     }
 
+    /**
+     * 
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param ship
+     * @param dir
+     * @return true if this ship can be placed at (x,y) with this direction
+     */
     public boolean moveIsValid(int x,int y, AbstractShip ship, String dir ){
         int length = ship.getSize();
         if (0<= x && x <= (this.getSize()+1) && 0 <= y && y <= (this.getSize()+1) && !this.hasShip(x-1, y-1))
@@ -182,5 +212,20 @@ public class Board implements IBoard {
                 }
             }
         return false;
+    }
+    @Override
+    public Hit sendHit(int x, int y){
+        x--;
+        y--;
+        if (this.hasShip(x, y)){
+            AbstractShip shipStruck = this.navires[x][y].getShip();
+            if (!shipStruck.isSunk()){
+                return Hit.STIKE;
+            }
+            else 
+                return Hit.STIKE; // A MODIFIER POUR RENVOYER LABEL DU SHIP COULÉ
+        }
+        else 
+            return Hit.MISS;
     }
 }
