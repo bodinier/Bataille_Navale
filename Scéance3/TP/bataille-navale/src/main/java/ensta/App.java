@@ -2,7 +2,7 @@ package ensta;
 
 import ensta.board.*;
 import ensta.ships.*;
-
+import ensta.player.*;
 import java.util.ArrayList;
 
 public class App 
@@ -32,7 +32,7 @@ public class App
     }
 
         if (test){
-            Board myBoard = new Board("myBoard", 8);
+            /*Board myBoard = new Board("myBoard", 8);
             Carrier carrier = new Carrier("black pearl", 'd', Direction.EAST);
             myBoard.putShip(carrier, 2, 3);
             myBoard.print();
@@ -40,10 +40,10 @@ public class App
             myBoard.sendHit(1, 8);
             myBoard.sendHit(2, 8);
             myBoard.sendHit(2, 6);
-            myBoard.sendHit(2, 5);
             myBoard.sendHit(2, 4);
             System.out.println(myBoard.sendHit(2, 7));
-            myBoard.print();
+            myBoard.print();*/
+            TestGame.main();
         }
     }
 }

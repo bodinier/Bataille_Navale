@@ -1,6 +1,8 @@
 package ensta.ships;
-import ensta.ColorUtil;
-import ensta.ColorUtil.*;
+
+import ensta.tools.*;
+import ensta.tools.ColorUtil.Color;
+
 
 public class ShipState {
     private AbstractShip ship;
@@ -15,8 +17,10 @@ public class ShipState {
     }
 
     public void addStrike(){
-        this.struck = true;
-        ship.addStrike();
+        if (!this.ship.isSunk()){
+            this.struck = true;
+            ship.addStrike();
+        }
     }
 
     public boolean isStruck(){

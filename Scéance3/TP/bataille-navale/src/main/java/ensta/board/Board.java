@@ -1,9 +1,9 @@
 package ensta.board;
 //import org.omg.CORBA.portable.ValueFactory;
 
-import ensta.ColorUtil;
+import ensta.tools.*;
+import ensta.tools.ColorUtil.Color;
 import ensta.Hit;
-import ensta.ColorUtil.Color;
 import ensta.ships.*;
 
 public class Board implements IBoard {
@@ -157,7 +157,7 @@ public class Board implements IBoard {
 
     @Override
     public boolean hasShip(int x, int y){
-        return (navires[x][y] != null) ? true : false;
+        return (this.navires[x][y] != null) ? true : false;
     }
 
     @Override
@@ -221,10 +221,12 @@ public class Board implements IBoard {
         if (this.hasShip(x-1, y-1)){
             AbstractShip shipStruck = this.navires[x-1][y-1].getShip();
             if (!shipStruck.isSunk()){
+                //TODO remove setHit
                 this.setHit(true, x, y);
                 return Hit.STIKE;
             }
             else {
+                //TODO remove setHit
                 this.setHit(true, x, y);
                 int type = shipStruck.getSize();
                 return Hit.fromInt(type);
