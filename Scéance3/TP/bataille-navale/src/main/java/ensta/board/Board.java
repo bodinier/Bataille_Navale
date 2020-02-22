@@ -31,6 +31,7 @@ public class Board implements IBoard {
     public void print(){
         int size = navires.length;
 
+        System.out.println("");
         //On affiche les noms des tableaux
         System.out.print("Navires");
         for (int i =0; i<4*size+1;i++ )
@@ -91,7 +92,9 @@ public class Board implements IBoard {
             }
             System.out.println("");
         }
+        System.out.println("");
     }
+
     @Override
     public int getSize(){
         return navires[0].length;
@@ -175,8 +178,8 @@ public class Board implements IBoard {
      * @return true if there is a hit at (x,y)
      */
     @Override
-    public boolean getHit(int x, int y){
-        return (frappes[x][y].booleanValue());
+    public Boolean getHit(int x, int y){
+        return (frappes[x][y]);
         
     }
 
@@ -215,17 +218,21 @@ public class Board implements IBoard {
     }
     @Override
     public Hit sendHit(int x, int y){
-        x--;
-        y--;
-        if (this.hasShip(x, y)){
-            AbstractShip shipStruck = this.navires[x][y].getShip();
+        if (this.hasShip(x-1, y-1)){
+            AbstractShip shipStruck = this.navires[x-1][y-1].getShip();
             if (!shipStruck.isSunk()){
+                this.setHit(true, x, y);
                 return Hit.STIKE;
             }
-            else 
-                return Hit.STIKE; // A MODIFIER POUR RENVOYER LABEL DU SHIP COULÉ
+            else {
+                this.setHit(true, x, y);
+                int type = shipStruck.getSize();
+                return Hit.fromInt(type);
+            }
         }
-        else 
+        else {
+            this.setHit(true, x, y);
             return Hit.MISS;
+        }
     }
 }

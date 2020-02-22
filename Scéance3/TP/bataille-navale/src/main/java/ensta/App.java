@@ -35,8 +35,14 @@ public class App
             Board myBoard = new Board("myBoard", 8);
             Carrier carrier = new Carrier("black pearl", 'd', Direction.EAST);
             myBoard.putShip(carrier, 2, 3);
-            myBoard.setHit(true, 5, 3);
-            myBoard.setHit(true, 2, 3);
+            myBoard.print();
+            myBoard.sendHit(2, 3);
+            myBoard.sendHit(1, 8);
+            myBoard.sendHit(2, 8);
+            myBoard.sendHit(2, 6);
+            myBoard.sendHit(2, 5);
+            myBoard.sendHit(2, 4);
+            System.out.println(myBoard.sendHit(2, 7));
             myBoard.print();
         }
     }

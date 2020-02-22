@@ -48,14 +48,10 @@ abstract public class AbstractShip{
 
     public void addStrike(){
         this.strikeCount ++;
-        if (this.isSunk()){
-            System.out.println(this.name + " is sunk !");
-        }
-        
     }
 
     public boolean isSunk(){
-        if (strikeCount >= size){
+        if (strikeCount >= size-1){
             return true;
         }
         else 
