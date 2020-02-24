@@ -28,6 +28,7 @@ public class Board implements IBoard {
         this.frappes = frap;
     }
 
+    @Override
     public void print(){
         int size = navires.length;
 
@@ -110,46 +111,33 @@ public class Board implements IBoard {
     public void putShip(AbstractShip ship, int x, int y){
         int size = ship.getSize();
         Direction dir = ship.getDirection();
-        x--;
-        y--;
+        if (x < 0 || y < 0 || x > this.getSize() || y > this.getSize()){
+            System.out.println("erreur : données invalides, je quitte le programme");
+            System.exit(0);
+        }
         switch (dir){
             case NORTH :
                 for (int i=0; i<size; i++)
                 {
-                    if ((x-i >= 0) && (navires[x-i][y] == null))
-                    {
-                        navires[x-i][y]= new ShipState(ship) ;
-                    }
-                    else 
-                        System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + (x-i) +";"+ y +")");
+                    navires[x-i-1][y-1]= new ShipState(ship) ;
                 }
                 break;
             case SOUTH :
                 for (int i=0; i<size; i++)
                 {
-                    if ( (x+i <= this.getSize() ) && (navires[x+i][y] == null))
-                        navires[x+i][y]= new ShipState(ship);
-                    else 
-                        System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + (x+i) +";"+ y +")");
+                    navires[x+i-1][y-1]= new ShipState(ship);
                 }
                 break;
             case EAST :
                 for (int i=0; i<size; i++)
                 {
-                    if ( (y+i <= this.getSize() ) && (navires[x][y+i] == null)){
-                        navires[x][y+i] = new ShipState(ship);
-                    }
-                    else 
-                        System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + x +";"+ (y+i) +")");
+                    navires[x-1][y+i-1] = new ShipState(ship);
                 }
                 break;
             case WEST :
                 for (int i=0; i<size; i++)
                 {
-                    if ((y-i >= 0)&&(navires[x][y-i] == null))
-                        navires[x][y-i]= new ShipState(ship);
-                    else 
-                        System.out.print("erreur : il y a déjà un navire ici ou en dehors du cadre: (" + x + ";" + (y-i) +")");
+                    navires[x-1][y-i-1] = new ShipState(ship);
                 }
                 break;
         }
@@ -191,31 +179,50 @@ public class Board implements IBoard {
      * @param dir
      * @return true if this ship can be placed at (x,y) with this direction
      */
-    public boolean moveIsValid(int x,int y, AbstractShip ship, String dir ){
-        int length = ship.getSize();
-        if (0<= x && x <= (this.getSize()+1) && 0 <= y && y <= (this.getSize()+1) && !this.hasShip(x-1, y-1))
-            {
-                switch (dir){
-                    case "n" :
-                        if (x-length >= 0)
-                            return true;
-                        break;
-                    case "s" :
-                        if (x+length <= this.getSize()+1)
-                            return true;
-                        break;
-                    case "e" :
-                        if (y+length <= this.getSize()+1)
-                            return true;
-                        break;
-                    case "w" :
-                        if (y-length >= 0)
-                            return true;
-                     break;
-                }
+    public boolean canPutShip(int x,int y, AbstractShip ship){
+        System.out.println("("+x+","+y+") and dir = " + ship.getDirection() + " shipSize = " + ship.getSize());
+        int shipLength = ship.getSize();
+        Direction shipDir = ship.getDirection();
+        int boardSize = this.getSize();
+        if (x-1 < 0 || x-1 > boardSize || y-1 < 0 || y-1 > boardSize)
+            return false;
+        switch (shipDir){
+            case NORTH :
+            for (int i =0; i<shipLength; i++){
+                if ((x-1-i)< 0)
+                    return false;
+                else if (this.hasShip(x-1-i, y-1))
+                    return false;
             }
-        return false;
+            break;
+            case SOUTH : 
+            for (int i =0; i<shipLength; i++){
+                if ((x-1+i)> boardSize-1)
+                    return false;
+                if (this.hasShip(x-1+i, y-1))
+                    return false;
+            }
+            break;
+            case EAST : 
+            for (int i =0; i<shipLength; i++){
+                if ((y-1+i)> boardSize-1)
+                    return false;
+                else if (this.hasShip(x-1, y-1+i))
+                    return false;
+            }
+            break;
+            case WEST : 
+            for (int i =0; i<shipLength; i++){
+                if ((y-1-i) < 0 )
+                    return false;
+                else if (this.hasShip(x-1, y-1-i))
+                    return false;
+            }
+            break;
+        }
+        return true;
     }
+
     @Override
     public Hit sendHit(int x, int y){
         if (this.hasShip(x-1, y-1)){

@@ -81,6 +81,8 @@ public class Player {
             // return hit is obvious. But how to return coords at the same time ?
             coords[0] = hitInput.x;
             coords[1] = hitInput.x;
+            if (hit == Hit.STIKE)
+                done =true; 
         } while (!done);
 
         return hit;

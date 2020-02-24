@@ -5,12 +5,14 @@ import ensta.ships.*;
 
 public interface IBoard { 
 
+    void print();
     /**
      * Get the size of the grids contained in the Board
      * @return the size of the grids contained in the Board
      */
     int getSize();
 
+    public boolean canPutShip(int x,int y, AbstractShip ship);
     /**
     * Put the given ship at the given position
     * @param ship The ship to place on the board

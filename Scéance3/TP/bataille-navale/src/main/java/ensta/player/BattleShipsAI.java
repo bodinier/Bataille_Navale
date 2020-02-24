@@ -10,45 +10,19 @@ import ensta.tools.*;
 
 public class BattleShipsAI implements Serializable {
 
-    /*
-     * ** Attributs
-     */
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * grid size.
-     */
     private final int size;
-
-    /**
-     * My board. My ships have to be put on this one.
-     */
     private final IBoard board;
-
-    /**
-     * My opponent's board. My hits go on this one to strike his ships.
-     */
     private final IBoard opponent;
 
-    /**
-     * Coords of last known strike. Would be a good idea to target next hits around
-     * this point.
-     */
+    
+    //Coords of last known strike. Would be a good idea to target next hits around
+    //this point.
     private int lastStrike[];
-
-    /**
-     * If last known strike lead me to think the underlying ship has vertical
-     * placement.
-     */
+    //If last known strike lead me to think the underlying ship has vertical
+    //placement.
     private Boolean lastVertical;
-
-    /*
-     * ** Constructeur
-     */
 
     /**
      *
@@ -58,34 +32,42 @@ public class BattleShipsAI implements Serializable {
     public BattleShipsAI(IBoard myBoard, IBoard opponentBoard) {
         this.board = myBoard;
         this.opponent = opponentBoard;
-        size = board.getSize();
+        this.size = board.getSize();
+        try {
+            assert(board.getSize() == opponentBoard.getSize());
+        }
+        catch (Exception e){
+            System.out.println("my board and my opponent's board aren't the same size");
+        }
     }
 
-    /*
-     * ** Méthodes publiques
-     */
-
     /**
-     * Put the ships on owned board.
-     * 
+     * Put the ships on owned board
      * @param ships the ships to put
      */
     public void putShips(AbstractShip ships[]) {
-        int boardSize = this.board.getSize();
-        int x, y, dir;
+        int boardSize = this.size;
+        int x = 1, y = 1;
         Direction o;
         Random rnd = new Random();
         Direction[] orientations = Direction.values();
-
+        boolean valid = false;
         for (AbstractShip s : ships) {
             do {
-                x = rnd.nextInt(boardSize);
-                y = rnd.nextInt(boardSize);
-                dir = rnd.nextInt(4);
-                o = orientations[dir];
+                valid = false;
+                x = rnd.nextInt(boardSize-1)+1;
+                y = rnd.nextInt(boardSize-1)+1;
+                o = orientations[rnd.nextInt(4)];
                 s.setDirection(o);
-            } while (!canPutShip(s, x, y));
+                System.out.println("x = " + x + " y = " + y);
+                if (this.board.canPutShip(x, y, s)){
+                    System.out.println(this.board.canPutShip(x, y, s));
+                    valid = true;
+                }
+            } while (!valid);
+            s.toString();
             board.putShip(s, x, y);
+            board.print();
         }
     }
 
@@ -149,44 +131,6 @@ public class BattleShipsAI implements Serializable {
      * *** Méthodes privées
      */
 
-    private boolean canPutShip(AbstractShip ship, int x, int y) {
-        Direction o = ship.getDirection();
-        int dx = 0, dy = 0;
-        if (o == Direction.EAST) {
-            if (x + ship.getSize() >= this.size) {
-                return false;
-            }
-            dx = 1;
-        } else if (o == Direction.SOUTH) {
-            if (y + ship.getSize() >= this.size) {
-                return false;
-            }
-            dy = 1;
-        } else if (o == Direction.NORTH) {
-            if (y + 1 - ship.getSize() < 0) {
-                return false;
-            }
-            dy = -1;
-        } else if (o == Direction.WEST) {
-            if (x + 1 - ship.getSize() < 0) {
-                return false;
-            }
-            dx = -1;
-        }
-
-        int ix = x;
-        int iy = y;
-
-        for (int i = 0; i < ship.getSize(); ++i) {
-            if (board.hasShip(ix, iy)) {
-                return false;
-            }
-            ix += dx;
-            iy += dy;
-        }
-
-        return true;
-    }
 
     private boolean guessOrientation(int[] c1, int[] c2) {
         return c1[0] == c2[0];

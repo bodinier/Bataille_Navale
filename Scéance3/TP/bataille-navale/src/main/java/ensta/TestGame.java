@@ -26,23 +26,19 @@ public class TestGame {
         Submarine submarine1 = new Submarine("submarine 1", 's', Direction.SOUTH);
         Submarine submarine2 = new Submarine("submarine 2", 's', Direction.NORTH);
         Carrier carrier = new Carrier("carrier", 'c', Direction.EAST);
-        ArrayList<AbstractShip> shipList = new ArrayList<AbstractShip>();
-        shipList.add(destroyer);
-        shipList.add(submarine1);
-        shipList.add(submarine2);
-        shipList.add(battleShip);
-        shipList.add(carrier);
-        myBoard.putShip(destroyer, 1, 1);
-        myBoard.putShip(battleShip, 2, 5);
-        myBoard.putShip(submarine1, 5, 1);
-        myBoard.putShip(submarine2, 8, 6);
-        myBoard.putShip(carrier, 7, 1);
-        myBoard.print();
+        AbstractShip[] shipList = new AbstractShip[5];
+        shipList[0] = destroyer;
+        shipList[1] = battleShip;
+        shipList[2] = submarine1;
+        shipList[3] = submarine2;
+        shipList[4] = carrier;
 
         BattleShipsAI ai = new BattleShipsAI(myBoard, myBoard);
-        //ai.putShips(shipList);
+        ai.putShips(shipList);
+
         int sunkCounter = 0;
         int[] shipSunkList = {2, 3, 4, 5};
+
         do {
             int[] coords = {0, 0};
             Hit hit = ai.sendHit(coords);

@@ -46,6 +46,23 @@ abstract public class AbstractShip{
         this.dir = newDir;
     }
 
+    public void setDirection(String newDir){
+        switch (newDir){
+            case "n" :
+                this.dir = Direction.NORTH;
+                break;
+            case "s" :
+                this.dir = Direction.SOUTH;
+                break;
+            case "e" :
+                this.dir = Direction.EAST;
+                break;
+            case "w" :
+                this.dir = Direction.WEST;
+                break;
+        }
+    }
+
     public void addStrike(){
         this.strikeCount ++;
     }
