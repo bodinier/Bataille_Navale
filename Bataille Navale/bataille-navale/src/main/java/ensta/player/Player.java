@@ -73,7 +73,7 @@ public class Player {
 
         do {
             System.out.println("Où frapper ?");
-            InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
+            InputHelper.CoordInput hitInput = InputHelper.readCoordInput(this.board.getSize());
             // TODO call sendHit on this.opponentBoard
             try {
                 hit = this.opponentBoard.sendHit(hitInput.y, hitInput.x);

@@ -74,7 +74,7 @@ public final class InputHelper {
         return res;
     }
 
-    public static CoordInput readCoordInput() {
+    public static CoordInput readCoordInput(int gridSize) {
         @SuppressWarnings("resource")
         Scanner sin = new Scanner(System.in);
         CoordInput res = new CoordInput();
@@ -86,9 +86,9 @@ public final class InputHelper {
                 res.x = (int)(coord.charAt(0) - 'a')+1;
                 res.y = Integer.parseInt(coord.substring(1, coord.length())) ;
                 done = true;
-                if (res.x <= 0 || res.y <= 0)
+                if (res.x <= 0 || res.y <= 0 || res.x > gridSize || res.y > gridSize)
                     throw new IllegalArgumentException("invalid inputs");
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 // nop
             }
 

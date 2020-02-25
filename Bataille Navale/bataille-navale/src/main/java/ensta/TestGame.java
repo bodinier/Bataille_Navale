@@ -46,7 +46,7 @@ public class TestGame {
             Hit hit = ai.sendHit(coords);
             System.out.println("hit at : (" + coords[0] + "," + coords[1]+")");
             System.out.println(hit.toString());
-            if (Arrays.asList(shipSunkList).contains(hit)){
+            if ((hit != Hit.MISS) && (hit != Hit.STIKE)){
                 sunkCounter ++;
             }
             myBoard.print();

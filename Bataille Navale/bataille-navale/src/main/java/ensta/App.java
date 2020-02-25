@@ -32,7 +32,7 @@ public class App
     }
 
         if (test){
-            Board myBoard = new Board("myBoard", 8);
+            /*Board myBoard = new Board("myBoard", 8);
             Carrier carrier = new Carrier("black pearl", 'd', Direction.EAST);
             BattleShip battleship = new BattleShip("ckikou", 'b', Direction.SOUTH);
             myBoard.putShip(carrier, 5, 1);
@@ -56,8 +56,12 @@ public class App
             hit = myBoard.sendHit(5, 5);
             myBoard.setHit(true, 5, 5);
             System.out.println(hit);
+            myBoard.print();*/
+            TestGame.main();
+            /*Board myBoard = new Board("myBoard", 8);
+            Carrier carrier = new Carrier("black pearl", 'c', Direction.WEST);
             myBoard.print();
-            //TestGame.main();
+            System.out.println(myBoard.canPutShip(carrier, 1, 5));*/
         }
     }
 }

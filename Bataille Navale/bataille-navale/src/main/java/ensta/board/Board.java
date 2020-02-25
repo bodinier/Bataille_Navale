@@ -1,6 +1,5 @@
 package ensta.board;
 //import org.omg.CORBA.portable.ValueFactory;
-import java.util.*;
 import ensta.tools.*;
 import ensta.tools.ColorUtil.Color;
 import ensta.Hit;
@@ -39,8 +38,12 @@ public class Board implements IBoard {
         {
             System.out.print(ColorUtil.colorize("-", Color.CYAN));
         }
-        System.out.println(ColorUtil.colorize(" Frappes", Color.YELLOW));
-        
+        System.out.print(ColorUtil.colorize(" Frappes", Color.YELLOW));
+        for (int i =0; i<4*(size-1);i++ )
+        {
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
+        }
+        System.out.println("");
         for (int i=0; i<size+1; i++){
             if (i==0)
                 System.out.print("    ");
@@ -62,20 +65,20 @@ public class Board implements IBoard {
             if (i<9)
                 System.out.print(ColorUtil.colorize(i+1 + "   ", Color.GREEN));
             else if (i>=9)
-            System.out.print(i+1 + "  ");
+            System.out.print(ColorUtil.colorize(i+1 + "  ", Color.GREEN));
             // Navires :
             for (int j=0; j<size; j++)
             {
                 if (navires[i][j] != null)
                     System.out.print(" " + navires[i][j].toString() + "  ");
                 else 
-                    System.out.print(" ." + "  ");
+                    System.out.print(ColorUtil.colorize(" ." + "  ", Color.GREEN));
             }
-            System.out.print("     ");
+            System.out.print(ColorUtil.colorize("  |  ", Color.CYAN));
             if (i<9)
-                System.out.print(i+1 + "   ");
+            System.out.print(ColorUtil.colorize(i+1 + "   ", Color.YELLOW));
             else if (i>=9)
-            System.out.print(i+1 + "  ");
+            System.out.print(ColorUtil.colorize(i+1 + "  ", Color.YELLOW));
             
             //Frappes : 
             for (int j=0; j<size; j++)
@@ -92,7 +95,16 @@ public class Board implements IBoard {
                 }
 
             }
+            System.out.print(ColorUtil.colorize("  |  ", Color.CYAN));
             System.out.println("");
+        }
+        for (int i =0; i<4*size+1;i++ )
+        {
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
+        }
+        for (int i =0; i<5*size+1;i++ )
+        {
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
         }
         System.out.println("");
     }
@@ -114,7 +126,6 @@ public class Board implements IBoard {
             throw new IllegalArgumentException("Out of map!"  + x + " " + y);
         }
         int size = ship.getSize();
-        boolean collapse = false;
 
         switch (ship.getDirection()) {
 
@@ -144,8 +155,10 @@ public class Board implements IBoard {
                 break;
 
             case WEST:
-                if (y-1-size < 0 || y-1-size > this.getSize()+1)
+                if (y-size < 0 || y-1-size > this.getSize()+1)
+                {
                     throw(new IllegalArgumentException("Out of map!" + x + " " + y));
+                }
                 for (int i =0; i < size; i++){
                     if (hasShip(x-1, y-1-i))
                         throw new IllegalArgumentException("Ship Collapse !" + x + " " + y);
@@ -156,8 +169,9 @@ public class Board implements IBoard {
                 break;
 
             case EAST:
-                if (y-1+size > this.getSize()+1 || y-1+size < 0)
+                if (y-1+size > this.getSize()+1 || y-1+size < 0){
                     throw(new IllegalArgumentException("Out of map!"));
+                }
                     for (int i =0; i < size; i++){
                         if (hasShip(x-1, y-1+i))
                             throw new IllegalArgumentException("Ship Collapse !" + x + " " + y);
@@ -229,8 +243,9 @@ public class Board implements IBoard {
                 break;
 
             case WEST:
-                if (y-1-size < 0 || y-1-size > this.getSize()+2)
-                    return false;
+                if (y-size < 0 || y-1-size > this.getSize()+2){
+                    System.out.println("LA1");
+                    return false;}
                 for (int i =0; i < size; i++){
                     if (hasShip(x-1, y-1-i))
                         return false;
@@ -238,8 +253,10 @@ public class Board implements IBoard {
                 break;
 
             case EAST:
-                if (y-1+size > this.getSize()+2 || y-1+size < 0)
+                if (y-1+size > this.getSize()+3 || y-1+size < 0){
+                    System.out.println("LA2");
                     return false;
+                }
                 for (int i =0; i < size; i++){
                     if (hasShip(x-1, y-1+i))
                         return false;
