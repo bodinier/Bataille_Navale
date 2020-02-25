@@ -75,7 +75,6 @@ public class Game {
 
             done = updateScore();
             b1.print();
-            b2.print();
             
             System.out.println(makeHitMessage(false /* outgoing hit */, coords, hit));
 
