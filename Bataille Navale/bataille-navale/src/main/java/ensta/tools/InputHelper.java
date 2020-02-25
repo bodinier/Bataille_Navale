@@ -55,8 +55,9 @@ public final class InputHelper {
                     if (Arrays.asList(validOrientations).contains(in[1])) {
                         res.orientation = in[1];
                         ship.setDirection(res.orientation);
-                        res.y = (int)(coord.charAt(0) - 'a'+1);
+                        res.y = (int)(coord.charAt(0) - 'a')+1;
                         res.x = Integer.parseInt(coord.substring(1, coord.length()));
+
                         if (board.canPutShip(ship, res.x, res.y))
                             done = true;
                     }
@@ -82,9 +83,11 @@ public final class InputHelper {
         do {
             try {
                 String coord = sin.nextLine().toLowerCase();
-                res.x = coord.charAt(0) - 'a';
-                res.y = Integer.parseInt(coord.substring(1, coord.length())) - 1;
+                res.x = (int)(coord.charAt(0) - 'a')+1;
+                res.y = Integer.parseInt(coord.substring(1, coord.length())) ;
                 done = true;
+                if (res.x <= 0 || res.y <= 0)
+                    throw new IllegalArgumentException("invalid inputs");
             } catch (Exception e) {
                 // nop
             }

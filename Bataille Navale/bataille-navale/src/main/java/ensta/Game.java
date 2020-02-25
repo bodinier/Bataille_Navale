@@ -62,13 +62,14 @@ public class Game {
     public void run() {
         int[] coords = new int[2];
         Board b1 = player1.getBoard();
+        Board b2 = player1.getBoard();
         Hit hit;
 
         // main loop
         b1.print();
         boolean done;
         do {
-            hit = player1.sendHit(coords);; // TODO player1 send a hit
+            hit = player1.sendHit(coords); // TODO player1 send a hit
             boolean strike = hit != Hit.MISS; // TODO set this hit on his board (b1)
             b1.setHit(strike, coords[0], coords[1]);
 
@@ -149,6 +150,11 @@ public class Game {
     }
 
     private String makeHitMessage(boolean incoming, int[] coords, Hit hit) {
+        int xtmp, ytmp;
+        xtmp = coords[0];
+        ytmp = coords[1];
+        coords[0] = ytmp-1;
+        coords[1] = xtmp-1;
         String msg;
         ColorUtil.Color color = ColorUtil.Color.RESET;
         switch (hit) {

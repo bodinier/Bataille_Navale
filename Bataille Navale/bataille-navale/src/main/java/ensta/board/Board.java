@@ -34,24 +34,25 @@ public class Board implements IBoard {
 
         System.out.println("");
         //On affiche les noms des tableaux
-        System.out.print("Navires");
+        System.out.print(ColorUtil.colorize("Navires", Color.GREEN));
         for (int i =0; i<4*size+1;i++ )
         {
-            System.out.print(" ");
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
         }
-        System.out.println(" Frappes");
+        System.out.println(ColorUtil.colorize(" Frappes", Color.YELLOW));
+        
         for (int i=0; i<size+1; i++){
             if (i==0)
                 System.out.print("    ");
             else
-                System.out.print(" "+(char)(64+i) + "  ");
+                System.out.print(ColorUtil.colorize(" "+(char)(64+i) + "  ", Color.GREEN));
         }
         System.out.print("       ");
         for (int i=0; i<size+1; i++){
             if (i==0)
                 System.out.print("   ");
             else
-                System.out.print(" "+(char)(64+i) + "  ");
+                System.out.print(ColorUtil.colorize(" "+(char)(64+i) + "  ", Color.YELLOW));
         }
 
         // Affichage des tableaux :
@@ -59,7 +60,7 @@ public class Board implements IBoard {
         for (int i =0; i<size; i++)
         {
             if (i<9)
-                System.out.print(i+1 + "   ");
+                System.out.print(ColorUtil.colorize(i+1 + "   ", Color.GREEN));
             else if (i>=9)
             System.out.print(i+1 + "  ");
             // Navires :
@@ -80,14 +81,14 @@ public class Board implements IBoard {
             for (int j=0; j<size; j++)
             {
                 if (frappes[i][j] != null){
-                    if (frappes[i][j].booleanValue() && this.hasShip(i, j)){
+                    if (frappes[i][j]){
                         System.out.print("  " + ColorUtil.colorize("X", Color.RED) + " ");
                     }
                     else 
                         System.out.print("  " + ColorUtil.colorize("X", Color.WHITE) + " ");
                 }
                 else {
-                    System.out.print("  ." + " ");
+                    System.out.print(ColorUtil.colorize("  ." + " ", Color.YELLOW));
                 }
 
             }
@@ -178,14 +179,9 @@ public class Board implements IBoard {
     public void setHit(boolean hit, int x, int y){
         x--;
         y--;
-        if (hit)   
-            this.frappes[x][y] = true;
-        else 
-            this.frappes[x][y] = false;
-        if (this.hasShip(x, y)){
-            this.navires[x][y].addStrike();
-        }
+        this.frappes[x][y] = hit;
     }
+    
     /**
      * @param x
      * @param y
@@ -207,7 +203,7 @@ public class Board implements IBoard {
      */
     public boolean canPutShip(AbstractShip ship, int x, int y) {
         System.out.println("( " + x + ", " + y + ") => dir = " + ship.getDirection());
-        if(x-1 <= 0 || x-1 >= this.getSize()+1 || y-1 <= 0 || y-1 >= this.getSize()+1) {
+        if(x-1 < 0 || x-1 > this.getSize()+2 || y-1 < 0 || y-1 > this.getSize()+2) {
             return false;
         }
         int size = ship.getSize();
@@ -215,7 +211,7 @@ public class Board implements IBoard {
         switch (ship.getDirection()) {
 
             case NORTH:
-                if (x-1-size < 0 || x-1-size > this.getSize()+1)
+                if (x-1-size < 0 || x-1-size > this.getSize()+2)
                     return false;
                 for (int i =0; i < size; i++){
                     if (hasShip(x-1-i, y-1))
@@ -224,7 +220,7 @@ public class Board implements IBoard {
                 break;
 
             case SOUTH:
-                if (x-1+size >this.getSize()+1 || x-1+size < 0 )
+                if (x-1+size >this.getSize()+2 || x-1+size < 0 )
                     return false;
                 for (int i =0; i < size; i++){
                     if (hasShip(x-1+i, y-1))
@@ -233,7 +229,7 @@ public class Board implements IBoard {
                 break;
 
             case WEST:
-                if (y-1-size < 0 || y-1-size > this.getSize()+1)
+                if (y-1-size < 0 || y-1-size > this.getSize()+2)
                     return false;
                 for (int i =0; i < size; i++){
                     if (hasShip(x-1, y-1-i))
@@ -242,7 +238,7 @@ public class Board implements IBoard {
                 break;
 
             case EAST:
-                if (y-1+size > this.getSize()+1 || y-1+size < 0)
+                if (y-1+size > this.getSize()+2 || y-1+size < 0)
                     return false;
                 for (int i =0; i < size; i++){
                     if (hasShip(x-1, y-1+i))
@@ -266,20 +262,24 @@ public class Board implements IBoard {
 
         if (this.navires[x-1][y-1] == null) {
             return Hit.MISS;
-        } else {
-            if (!this.navires[x-1][y-1].isStruck()) {
-                this.navires[x-1][y-1].addStrike();
-            }
+        } 
 
-            if (this.navires[x-1][y-1].isSunk()) {
+        else {
+            if (!this.navires[x-1][y-1].isSunk()) {
+                this.navires[x-1][y-1].addStrike();
+
+                if (this.navires[x-1][y-1].isSunk()) {
+                    Hit hit = Hit.fromInt(this.navires[x-1][y-1].getShip().getSize());
+                    return hit;
+                } 
+                else 
+                    return Hit.STIKE;
+                }
+            else {
                 AbstractShip sunkShip = this.navires[x-1][y-1].getShip();
                 Hit hit = Hit.fromInt(sunkShip.getSize());
                 return hit;
             }
-            
-            else {
-                return Hit.STIKE;
-            }
-        }
-    }
+    }  
+}
 }

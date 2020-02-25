@@ -32,7 +32,7 @@ public class ShipState {
         if (this.struck){
             return ColorUtil.colorize(ship.getLabel(), Color.RED);
         }
-        return ColorUtil.colorize(ship.getLabel(), Color.BLUE);
+        return ColorUtil.colorize(ship.getLabel(), Color.GREEN);
     }
 
     public boolean isSunk(){

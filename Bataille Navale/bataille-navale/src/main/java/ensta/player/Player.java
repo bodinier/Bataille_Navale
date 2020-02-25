@@ -72,17 +72,20 @@ public class Player {
         Hit hit = null;
 
         do {
-            System.out.println("où frapper?");
+            System.out.println("Où frapper ?");
             InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
             // TODO call sendHit on this.opponentBoard
-            hit = this.opponentBoard.sendHit(hitInput.x+1, hitInput.y+1);
+            try {
+                hit = this.opponentBoard.sendHit(hitInput.y, hitInput.x);
+                done = true;
+            } catch (IllegalArgumentException e) {
+                System.err.println(e.getMessage());
+            }
 
             // TODO : Game expects sendHit to return BOTH hit result & hit coords.
             // return hit is obvious. But how to return coords at the same time ?
-            coords[0] = hitInput.x;
-            coords[1] = hitInput.y;
-            if (hit == Hit.STIKE)
-                done =true; 
+            coords[0] = hitInput.y;
+            coords[1] = hitInput.x;
         } while (!done);
 
         return hit;

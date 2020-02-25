@@ -32,15 +32,32 @@ public class App
     }
 
         if (test){
-            /*Board myBoard = new Board("myBoard", 8);
+            Board myBoard = new Board("myBoard", 8);
             Carrier carrier = new Carrier("black pearl", 'd', Direction.EAST);
             BattleShip battleship = new BattleShip("ckikou", 'b', Direction.SOUTH);
             myBoard.putShip(carrier, 5, 1);
             myBoard.print();
-            myBoard.putShip(battleship, 4, 1);
-            System.out.println(myBoard.canPutShip(battleship, 4, 1));
-            myBoard.print();*/
-            TestGame.main();
+            Hit hit = myBoard.sendHit(5, 1);
+            myBoard.setHit(true, 5, 1);
+            System.out.println(hit);
+            myBoard.print();
+            myBoard.sendHit(5, 2);
+            myBoard.setHit(true, 5, 2);
+            System.out.println(hit);
+            myBoard.print();
+            myBoard.sendHit(5, 3);
+            myBoard.setHit(true, 5, 3);
+            System.out.println(hit);
+            myBoard.print();
+            myBoard.sendHit(5, 4);
+            myBoard.setHit(true, 5, 4);
+            System.out.println(hit);
+            myBoard.print();
+            hit = myBoard.sendHit(5, 5);
+            myBoard.setHit(true, 5, 5);
+            System.out.println(hit);
+            myBoard.print();
+            //TestGame.main();
         }
     }
 }
