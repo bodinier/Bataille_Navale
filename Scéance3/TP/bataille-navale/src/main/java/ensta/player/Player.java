@@ -9,9 +9,13 @@ import ensta.ships.*;
 import ensta.tools.*;
 
 
-public class Player {
-    /* **
-     * Attributs
+public class Player implements Serializable{
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    /*
+     * ** Attributs
      */
     protected Board board;
     protected Board opponentBoard;
@@ -35,7 +39,7 @@ public class Player {
     /**
      * Read keyboard input to get ships coordinates. Place ships on given coodrinates.
      */
-    public void putShips(Board board) {
+    public void putShips() {
         boolean done = false;
         int i = 0;
 
@@ -58,7 +62,7 @@ public class Player {
                     s.setDirection(Direction.WEST);
                     break;
             }
-            board.putShip(s, res.x, res.y);
+            this.board.putShip(s, res.x, res.y);
 
             ++i;
             done = i == 5;
@@ -72,17 +76,20 @@ public class Player {
         Hit hit = null;
 
         do {
-            System.out.println("où frapper?");
-            InputHelper.CoordInput hitInput = InputHelper.readCoordInput();
+            System.out.println("Où frapper ?");
+            InputHelper.CoordInput hitInput = InputHelper.readCoordInput(this.board.getSize());
             // TODO call sendHit on this.opponentBoard
-            hit = this.opponentBoard.sendHit(hitInput.x, hitInput.y);
+            try {
+                hit = this.opponentBoard.sendHit(hitInput.y, hitInput.x);
+                done = true;
+            } catch (IllegalArgumentException e) {
+                System.err.println(e.getMessage());
+            }
 
             // TODO : Game expects sendHit to return BOTH hit result & hit coords.
             // return hit is obvious. But how to return coords at the same time ?
-            coords[0] = hitInput.x;
+            coords[0] = hitInput.y;
             coords[1] = hitInput.x;
-            if (hit == Hit.STIKE)
-                done =true; 
         } while (!done);
 
         return hit;
@@ -94,5 +101,19 @@ public class Player {
 
     public void setShips(AbstractShip[] ships) {
         this.ships = ships;
+    }
+
+    public Board getBoard(){
+        return this.board;
+    }
+
+    public boolean getLose(){
+        return this.lose;
+    }
+    public void setDestroyedCount(int value){
+        this.destroyedCount = value;
+    }
+    public void setLose(boolean state){
+        this.lose = state;
     }
 }

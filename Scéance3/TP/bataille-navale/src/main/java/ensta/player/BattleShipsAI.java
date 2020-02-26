@@ -1,71 +1,76 @@
 package ensta.player;
-
 import java.io.Serializable;
 import java.util.*;
-
-import ensta.Hit;
 import ensta.board.*;
 import ensta.ships.*;
-import ensta.tools.*;
+import ensta.Hit;
 
 public class BattleShipsAI implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private final int size;
-    private final IBoard board;
-    private final IBoard opponent;
-
-    
-    //Coords of last known strike. Would be a good idea to target next hits around
-    //this point.
-    private int lastStrike[];
-    //If last known strike lead me to think the underlying ship has vertical
-    //placement.
-    private Boolean lastVertical;
+    /* Attributs */
 
     /**
      *
-     * @param myBoard       board where ships will be put.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * grid length.
+     */
+    private final int size;
+
+    /**
+     * My board. My ships have to be put on this one.
+     */
+    private final IBoard board;
+
+    /**
+     * My opponent's board. My hits go on this one to strike his ships.
+     */
+    private final IBoard opponent;
+
+    /**
+     * Coords of last known strike. Would be a good idea to target next hits around this point.
+     */
+    private int lastStrike[];
+
+    /**
+     * If last known strike lead me to think the underlying ship has vertical placement.
+     */
+    private Boolean lastVertical;
+
+    /* Constructeur */
+
+    /**
+     *
+     * @param myBoard board where ships will be put.
      * @param opponentBoard Opponent's board, where hits will be sent.
      */
     public BattleShipsAI(IBoard myBoard, IBoard opponentBoard) {
         this.board = myBoard;
         this.opponent = opponentBoard;
-        this.size = board.getSize();
-        try {
-            assert(board.getSize() == opponentBoard.getSize());
-        }
-        catch (Exception e){
-            System.out.println("my board and my opponent's board aren't the same size");
-        }
+        size = board.getSize();
     }
 
+    /* Méthodes publiques */
+
     /**
-     * Put the ships on owned board
+     * Put the ships on owned board.
      * @param ships the ships to put
      */
     public void putShips(AbstractShip ships[]) {
-        int boardSize = this.size;
-        int x = 1, y = 1;
+        int x, y;
         Direction o;
         Random rnd = new Random();
         Direction[] orientations = Direction.values();
-        boolean valid = false;
+
         for (AbstractShip s : ships) {
             do {
-                valid = false;
-                x = rnd.nextInt(boardSize-1)+1;
-                y = rnd.nextInt(boardSize-1)+1;
+                x = rnd.nextInt(this.size-1)+1;
+                y = rnd.nextInt(this.size-1)+1;
                 o = orientations[rnd.nextInt(4)];
                 s.setDirection(o);
-                System.out.println("x = " + x + " y = " + y);
-                if (this.board.canPutShip(x, y, s)){
-                    System.out.println(this.board.canPutShip(x, y, s));
-                    valid = true;
-                }
-            } while (!valid);
-            s.toString();
+            } while(!this.board.canPutShip(s, x, y));
             board.putShip(s, x, y);
             board.print();
         }
@@ -73,13 +78,13 @@ public class BattleShipsAI implements Serializable {
 
     /**
      *
-     * @param coords array must be of size 2. Will hold the coord of the send hit.
+     * @param coords array must be of length 2. Will hold the coord of the send hit.
      * @return the status of the hit.
      */
     public Hit sendHit(int[] coords) {
         int res[] = null;
         if (coords == null || coords.length < 2) {
-            throw new IllegalArgumentException("must provide an initialized array of size 2");
+            throw new IllegalArgumentException("must provide an initialized array of length 2");
         }
 
         // already found strike & orientation?
@@ -127,10 +132,45 @@ public class BattleShipsAI implements Serializable {
         return hit;
     }
 
-    /*
-     * *** Méthodes privées
-     */
+    /* Méthodes privées */
+    private boolean canPutShip(AbstractShip ship, int x, int y) {
+        Direction o = ship.getDirection();
+        int dx = 0, dy = 0;
+        if (o == Direction.EAST) {
+            if (x + ship.getSize() >= this.size) {
+                return false;
+            }
+            dx = 1;
+        } else if (o == Direction.SOUTH) {
+            if (y + ship.getSize() >= this.size) {
+                return false;
+            }
+            dy = 1;
+        } else if (o == Direction.NORTH) {
+            if (y + 1 - ship.getSize() < 0) {
+                return false;
+            }
+            dy = -1;
+        } else if (o == Direction.WEST) {
+            if (x + 1 - ship.getSize() < 0) {
+                return false;
+            }
+            dx = -1;
+        }
 
+        int ix = x;
+        int iy = y;
+
+        for (int i = 0; i < ship.getSize(); ++i) {
+            if (board.hasShip(ix, iy)) {
+                return false;
+            }
+            ix += dx;
+            iy += dy;
+        }
+
+        return true;
+    }
 
     private boolean guessOrientation(int[] c1, int[] c2) {
         return c1[0] == c2[0];
@@ -150,21 +190,20 @@ public class BattleShipsAI implements Serializable {
             y = rnd.nextInt(size);
         } while (!isUndiscovered(x, y));
 
-        return new int[] { x, y };
+        return new int[] {x, y};
     }
 
     /**
      * pick a coord verically around last known strike
-     * 
      * @return suitable coord, or null if none is suitable
      */
     private int[] pickVCoord() {
         int x = lastStrike[0];
         int y = lastStrike[1];
 
-        for (int iy : new int[] { y - 1, y + 1 }) {
+        for (int iy : new int[]{y - 1, y + 1}) {
             if (isUndiscovered(x, iy)) {
-                return new int[] { x, iy };
+                return new int[]{x, iy};
             }
         }
         return null;
@@ -172,16 +211,15 @@ public class BattleShipsAI implements Serializable {
 
     /**
      * pick a coord horizontally around last known strike
-     * 
      * @return suitable coord, or null if none is suitable
      */
     private int[] pickHCoord() {
         int x = lastStrike[0];
         int y = lastStrike[1];
 
-        for (int ix : new int[] { x - 1, x + 1 }) {
+        for (int ix : new int[]{x - 1, x + 1}) {
             if (isUndiscovered(ix, y)) {
-                return new int[] { ix, y };
+                return new int[]{ix, y};
             }
         }
         return null;

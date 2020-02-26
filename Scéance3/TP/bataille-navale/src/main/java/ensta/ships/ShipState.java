@@ -17,10 +17,10 @@ public class ShipState {
     }
 
     public void addStrike(){
-        if (!this.ship.isSunk()){
+        if (!struck){
             this.struck = true;
-            ship.addStrike();
-        }
+            this.ship.addStrike();
+        } //do nothing if already struck
     }
 
     public boolean isStruck(){
@@ -32,7 +32,7 @@ public class ShipState {
         if (this.struck){
             return ColorUtil.colorize(ship.getLabel(), Color.RED);
         }
-        return ColorUtil.colorize(ship.getLabel(), Color.BLUE);
+        return ColorUtil.colorize(ship.getLabel(), Color.GREEN);
     }
 
     public boolean isSunk(){

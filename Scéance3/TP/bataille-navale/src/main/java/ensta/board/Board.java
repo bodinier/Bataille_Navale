@@ -1,6 +1,5 @@
 package ensta.board;
 //import org.omg.CORBA.portable.ValueFactory;
-
 import ensta.tools.*;
 import ensta.tools.ColorUtil.Color;
 import ensta.Hit;
@@ -34,24 +33,29 @@ public class Board implements IBoard {
 
         System.out.println("");
         //On affiche les noms des tableaux
-        System.out.print("Navires");
+        System.out.print(ColorUtil.colorize("Navires", Color.GREEN));
         for (int i =0; i<4*size+1;i++ )
         {
-            System.out.print(" ");
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
         }
-        System.out.println(" Frappes");
+        System.out.print(ColorUtil.colorize(" Frappes", Color.YELLOW));
+        for (int i =0; i<4*(size-1);i++ )
+        {
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
+        }
+        System.out.println("");
         for (int i=0; i<size+1; i++){
             if (i==0)
                 System.out.print("    ");
             else
-                System.out.print(" "+(char)(64+i) + "  ");
+                System.out.print(ColorUtil.colorize(" "+(char)(64+i) + "  ", Color.GREEN));
         }
         System.out.print("       ");
         for (int i=0; i<size+1; i++){
             if (i==0)
                 System.out.print("   ");
             else
-                System.out.print(" "+(char)(64+i) + "  ");
+                System.out.print(ColorUtil.colorize(" "+(char)(64+i) + "  ", Color.YELLOW));
         }
 
         // Affichage des tableaux :
@@ -59,39 +63,48 @@ public class Board implements IBoard {
         for (int i =0; i<size; i++)
         {
             if (i<9)
-                System.out.print(i+1 + "   ");
+                System.out.print(ColorUtil.colorize(i+1 + "   ", Color.GREEN));
             else if (i>=9)
-            System.out.print(i+1 + "  ");
+            System.out.print(ColorUtil.colorize(i+1 + "  ", Color.GREEN));
             // Navires :
             for (int j=0; j<size; j++)
             {
                 if (navires[i][j] != null)
                     System.out.print(" " + navires[i][j].toString() + "  ");
                 else 
-                    System.out.print(" ." + "  ");
+                    System.out.print(ColorUtil.colorize(" ." + "  ", Color.GREEN));
             }
-            System.out.print("     ");
+            System.out.print(ColorUtil.colorize("  |  ", Color.CYAN));
             if (i<9)
-                System.out.print(i+1 + "   ");
+            System.out.print(ColorUtil.colorize(i+1 + "   ", Color.YELLOW));
             else if (i>=9)
-            System.out.print(i+1 + "  ");
+            System.out.print(ColorUtil.colorize(i+1 + "  ", Color.YELLOW));
             
             //Frappes : 
             for (int j=0; j<size; j++)
             {
                 if (frappes[i][j] != null){
-                    if (frappes[i][j].booleanValue() && this.hasShip(i, j)){
+                    if (frappes[i][j]){
                         System.out.print("  " + ColorUtil.colorize("X", Color.RED) + " ");
                     }
                     else 
                         System.out.print("  " + ColorUtil.colorize("X", Color.WHITE) + " ");
                 }
                 else {
-                    System.out.print("  ." + " ");
+                    System.out.print(ColorUtil.colorize("  ." + " ", Color.YELLOW));
                 }
 
             }
+            System.out.print(ColorUtil.colorize("  |  ", Color.CYAN));
             System.out.println("");
+        }
+        for (int i =0; i<4*size+1;i++ )
+        {
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
+        }
+        for (int i =0; i<5*size+1;i++ )
+        {
+            System.out.print(ColorUtil.colorize("-", Color.CYAN));
         }
         System.out.println("");
     }
@@ -108,58 +121,90 @@ public class Board implements IBoard {
      * @param y coordinate (1 <= y <= size)
      */
     @Override
-    public void putShip(AbstractShip ship, int x, int y){
-        int size = ship.getSize();
-        Direction dir = ship.getDirection();
-        if (x < 0 || y < 0 || x > this.getSize() || y > this.getSize()){
-            System.out.println("erreur : données invalides, je quitte le programme");
-            System.exit(0);
+    public void putShip(AbstractShip ship, int x, int y) {
+        if(x < 0 || x >= this.getSize()+1 || y < 0 || y >= this.getSize()+1) {
+            throw new IllegalArgumentException("Out of map!"  + x + " " + y);
         }
-        switch (dir){
-            case NORTH :
-                for (int i=0; i<size; i++)
-                {
-                    navires[x-i-1][y-1]= new ShipState(ship) ;
+        int size = ship.getSize();
+
+        switch (ship.getDirection()) {
+
+            case NORTH:
+                if (x-1-size < 0 || x-1-size > this.getSize()+1)
+                    throw(new IllegalArgumentException("Out of map!" + x + " " + y));
+                for (int i =0; i < size; i++){
+                    if (hasShip(x-1-i, y-1))
+                        throw new IllegalArgumentException("Ship Collapse !" + x + " " + y);
+                    }
+                for (int i =0; i < size; i++){
+                    this.navires[x-1-i][y-1] = new ShipState(ship);
                 }
                 break;
-            case SOUTH :
-                for (int i=0; i<size; i++)
-                {
-                    navires[x+i-1][y-1]= new ShipState(ship);
+
+            case SOUTH:
+                if (x-1+size >this.getSize()+1 || x-1+size < 0 )
+                    throw(new IllegalArgumentException("Out of map!" + x + " " + y));
+
+                for (int i =0; i < size; i++){
+                    if (hasShip(x-1+i, y-1))
+                        throw new IllegalArgumentException("Ship Collapse !" + x + " " + y);
+                    }
+                for (int i =0; i < size; i++){
+                    this.navires[x-1+i][y-1] = new ShipState(ship);
                 }
                 break;
-            case EAST :
-                for (int i=0; i<size; i++)
+
+            case WEST:
+                if (y-size < 0 || y-1-size > this.getSize()+1)
                 {
-                    navires[x-1][y+i-1] = new ShipState(ship);
+                    throw(new IllegalArgumentException("Out of map!" + x + " " + y));
+                }
+                for (int i =0; i < size; i++){
+                    if (hasShip(x-1, y-1-i))
+                        throw new IllegalArgumentException("Ship Collapse !" + x + " " + y);
+                    }
+                for (int i =0; i < size; i++){
+                    this.navires[x-1][y-1-i] = new ShipState(ship);
                 }
                 break;
-            case WEST :
-                for (int i=0; i<size; i++)
-                {
-                    navires[x-1][y-i-1] = new ShipState(ship);
+
+            case EAST:
+                if (y-1+size > this.getSize()+1 || y-1+size < 0){
+                    throw(new IllegalArgumentException("Out of map!"));
                 }
+                    for (int i =0; i < size; i++){
+                        if (hasShip(x-1, y-1+i))
+                            throw new IllegalArgumentException("Ship Collapse !" + x + " " + y);
+                        }
+                    for (int i =0; i < size; i++){
+                        this.navires[x-1][y-1+i] = new ShipState(ship);
+                    }
                 break;
         }
     }
+    
 
     @Override
     public boolean hasShip(int x, int y){
-        return (this.navires[x][y] != null) ? true : false;
+        // if the ship have been sunk, we consider that it doesnt exist anymore
+        if (this.navires[x][y] != null){
+            if (this.navires[x][y].isSunk())
+                return false;
+            else 
+                return true;
+        }
+        else 
+            return false;
+
     }
 
     @Override
     public void setHit(boolean hit, int x, int y){
         x--;
         y--;
-        if (hit)   
-            this.frappes[x][y] = true;
-        else 
-            this.frappes[x][y] = false;
-        if (this.hasShip(x, y)){
-            this.navires[x][y].addStrike();
-        }
+        this.frappes[x][y] = hit;
     }
+    
     /**
      * @param x
      * @param y
@@ -179,69 +224,93 @@ public class Board implements IBoard {
      * @param dir
      * @return true if this ship can be placed at (x,y) with this direction
      */
-    public boolean canPutShip(int x,int y, AbstractShip ship){
-        System.out.println("("+x+","+y+") and dir = " + ship.getDirection() + " shipSize = " + ship.getSize());
-        int shipLength = ship.getSize();
-        Direction shipDir = ship.getDirection();
-        int boardSize = this.getSize();
-        if (x-1 < 0 || x-1 > boardSize || y-1 < 0 || y-1 > boardSize)
+    public boolean canPutShip(AbstractShip ship, int x, int y) {
+        System.out.println("( " + x + ", " + y + ") => dir = " + ship.getDirection());
+        if(x-1 < 0 || x-1 > this.getSize()+2 || y-1 < 0 || y-1 > this.getSize()+2) {
             return false;
-        switch (shipDir){
-            case NORTH :
-            for (int i =0; i<shipLength; i++){
-                if ((x-1-i)< 0)
+        }
+        int size = ship.getSize();
+        try {
+        switch (ship.getDirection()) {
+
+            case NORTH:
+                if (x-1-size < 0 || x-1-size > this.getSize()+2)
                     return false;
-                else if (this.hasShip(x-1-i, y-1))
+                for (int i =0; i < size; i++){
+                    if (hasShip(x-1-i, y-1))
                     return false;
-            }
-            break;
-            case SOUTH : 
-            for (int i =0; i<shipLength; i++){
-                if ((x-1+i)> boardSize-1)
+                }
+                break;
+
+            case SOUTH:
+                if (x-1+size >this.getSize()+2 || x-1+size < 0 )
                     return false;
-                if (this.hasShip(x-1+i, y-1))
+                for (int i =0; i < size; i++){
+                    if (hasShip(x-1+i, y-1))
+                        return false;
+                }
+                break;
+
+            case WEST:
+                if (y-size < 0 || y-1-size > this.getSize()+2){
+                    System.out.println("LA1");
+                    return false;}
+                for (int i =0; i < size; i++){
+                    if (hasShip(x-1, y-1-i))
+                        return false;
+                }
+                break;
+
+            case EAST:
+                if (y-1+size > this.getSize()+3 || y-1+size < 0){
+                    System.out.println("LA2");
                     return false;
-            }
-            break;
-            case EAST : 
-            for (int i =0; i<shipLength; i++){
-                if ((y-1+i)> boardSize-1)
-                    return false;
-                else if (this.hasShip(x-1, y-1+i))
-                    return false;
-            }
-            break;
-            case WEST : 
-            for (int i =0; i<shipLength; i++){
-                if ((y-1-i) < 0 )
-                    return false;
-                else if (this.hasShip(x-1, y-1-i))
-                    return false;
-            }
-            break;
+                }
+                for (int i =0; i < size; i++){
+                    if (hasShip(x-1, y-1+i))
+                        return false;
+                }
+                break;
+            default :
+                return false;
+        }}
+        catch (Exception e){
+            return false;
         }
         return true;
     }
 
     @Override
-    public Hit sendHit(int x, int y){
-        if (this.hasShip(x-1, y-1)){
-            AbstractShip shipStruck = this.navires[x-1][y-1].getShip();
-            if (!shipStruck.isSunk()){
-                //TODO remove setHit
-                this.setHit(true, x, y);
-                return Hit.STIKE;
-            }
-            else {
-                //TODO remove setHit
-                this.setHit(true, x, y);
-                int type = shipStruck.getSize();
-                return Hit.fromInt(type);
-            }
+    public Hit sendHit(int x, int y) {
+        //check if not already hit
+        if (frappes[x-1][y-1] != null){
+            if (frappes[x-1][y-1])
+                return Hit.MISS;
         }
-        else {
-            this.setHit(true, x, y);
+        if(x < 0 || x >= this.getSize()+1| y < 0 || y >= this.getSize()+1){
+            throw new IllegalArgumentException("outside the map !");
+        }
+
+        if (this.navires[x-1][y-1] == null) {
             return Hit.MISS;
-        }
-    }
+        } 
+
+        else {
+            if (!this.navires[x-1][y-1].isSunk()) {
+                this.navires[x-1][y-1].addStrike();
+                // we consider the case only one strike remained
+                if (this.navires[x-1][y-1].isSunk()) {
+                    Hit hit = Hit.fromInt(this.navires[x-1][y-1].getShip().getSize());
+                    return hit;
+                } 
+                else 
+                    return Hit.STIKE; // this ship isnt sunk
+                }
+            else {
+                AbstractShip sunkShip = this.navires[x-1][y-1].getShip();
+                Hit hit = Hit.fromInt(sunkShip.getSize());
+                return hit;
+            }
+    }  
+}
 }

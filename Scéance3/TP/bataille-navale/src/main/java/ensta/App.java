@@ -28,15 +28,40 @@ public class App
         shipList.add(carrier);
         
         Player player = new Player(myBoard, opponentBoard, shipList);
-        player.putShips(myBoard);
+        player.putShips();
     }
 
         if (test){
-            Board myBoard = new Board("myBoard", 8);
+            /*Board myBoard = new Board("myBoard", 8);
             Carrier carrier = new Carrier("black pearl", 'd', Direction.EAST);
-            myBoard.putShip(carrier, 4, 4);
+            BattleShip battleship = new BattleShip("ckikou", 'b', Direction.SOUTH);
+            myBoard.putShip(carrier, 5, 1);
             myBoard.print();
-            //TestGame.main();
+            Hit hit = myBoard.sendHit(5, 1);
+            myBoard.setHit(true, 5, 1);
+            System.out.println(hit);
+            myBoard.print();
+            myBoard.sendHit(5, 2);
+            myBoard.setHit(true, 5, 2);
+            System.out.println(hit);
+            myBoard.print();
+            myBoard.sendHit(5, 3);
+            myBoard.setHit(true, 5, 3);
+            System.out.println(hit);
+            myBoard.print();
+            myBoard.sendHit(5, 4);
+            myBoard.setHit(true, 5, 4);
+            System.out.println(hit);
+            myBoard.print();
+            hit = myBoard.sendHit(5, 5);
+            myBoard.setHit(true, 5, 5);
+            System.out.println(hit);
+            myBoard.print();*/
+            TestGame.main();
+            /*Board myBoard = new Board("myBoard", 8);
+            Carrier carrier = new Carrier("black pearl", 'c', Direction.WEST);
+            myBoard.print();
+            System.out.println(myBoard.canPutShip(carrier, 1, 5));*/
         }
     }
 }

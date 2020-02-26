@@ -12,7 +12,7 @@ public interface IBoard {
      */
     int getSize();
 
-    public boolean canPutShip(int x,int y, AbstractShip ship);
+    public boolean canPutShip(AbstractShip ship, int x, int y);
     /**
     * Put the given ship at the given position
     * @param ship The ship to place on the board

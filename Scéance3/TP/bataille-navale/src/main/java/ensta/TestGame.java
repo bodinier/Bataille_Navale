@@ -6,6 +6,8 @@ import java.util.Arrays;
 import ensta.board.*;
 import ensta.player.BattleShipsAI;
 import ensta.ships.*;
+import ensta.player.*;
+import ensta.Hit;
 
 public class TestGame {
 
@@ -44,11 +46,11 @@ public class TestGame {
             Hit hit = ai.sendHit(coords);
             System.out.println("hit at : (" + coords[0] + "," + coords[1]+")");
             System.out.println(hit.toString());
-            if (Arrays.asList(shipSunkList).contains(hit)){
+            if ((hit != Hit.MISS) && (hit != Hit.STIKE)){
                 sunkCounter ++;
             }
             myBoard.print();
-            sleep(1000);
+            sleep(100);
         } while (sunkCounter <5);
     }
 }
