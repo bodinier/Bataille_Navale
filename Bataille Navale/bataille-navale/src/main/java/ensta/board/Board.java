@@ -186,7 +186,16 @@ public class Board implements IBoard {
 
     @Override
     public boolean hasShip(int x, int y){
-        return (this.navires[x][y] != null) ? true : false;
+        // if the ship have been sunk, we consider that it doesnt exist anymore
+        if (this.navires[x][y] != null){
+            if (this.navires[x][y].isSunk())
+                return false;
+            else 
+                return true;
+        }
+        else 
+            return false;
+
     }
 
     @Override
@@ -273,6 +282,11 @@ public class Board implements IBoard {
 
     @Override
     public Hit sendHit(int x, int y) {
+        //check if not already hit
+        if (frappes[x-1][y-1] != null){
+            if (frappes[x-1][y-1])
+                return Hit.MISS;
+        }
         if(x < 0 || x >= this.getSize()+1| y < 0 || y >= this.getSize()+1){
             throw new IllegalArgumentException("outside the map !");
         }
@@ -284,13 +298,13 @@ public class Board implements IBoard {
         else {
             if (!this.navires[x-1][y-1].isSunk()) {
                 this.navires[x-1][y-1].addStrike();
-
+                // we consider the case only one strike remained
                 if (this.navires[x-1][y-1].isSunk()) {
                     Hit hit = Hit.fromInt(this.navires[x-1][y-1].getShip().getSize());
                     return hit;
                 } 
                 else 
-                    return Hit.STIKE;
+                    return Hit.STIKE; // this ship isnt sunk
                 }
             else {
                 AbstractShip sunkShip = this.navires[x-1][y-1].getShip();

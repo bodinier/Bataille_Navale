@@ -9,9 +9,13 @@ import ensta.ships.*;
 import ensta.tools.*;
 
 
-public class Player {
-    /* **
-     * Attributs
+public class Player implements Serializable{
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    /*
+     * ** Attributs
      */
     protected Board board;
     protected Board opponentBoard;

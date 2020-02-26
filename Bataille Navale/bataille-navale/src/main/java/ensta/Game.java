@@ -106,29 +106,63 @@ public class Game {
 
 
     private void save() {
-//        try {
-//            // TODO bonus 2 : uncomment
-//            //  if (!SAVE_FILE.exists()) {
-//            //      SAVE_FILE.getAbsoluteFile().getParentFile().mkdirs();
-//            //  }
-//
-//            // TODO bonus 2 : serialize players
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        // try {
+        //     // TODO bonus 2 : uncomment
+        //      if (!SAVE_FILE.exists()) {
+        //     SAVE_FILE.getAbsoluteFile().getParentFile().mkdirs();
+        //      }
+
+        //     FileOutputStream fileOut1 =
+        //     new FileOutputStream("player1.ser");
+            
+        //     FileOutputStream fileOut2 =
+        //     new FileOutputStream("player2.ser");
+
+        //     //System.out.printf("Serialized data is saved in /tmp/employee.ser");
+
+
+        //     // TODO bonus 2 : serialize players
+
+        //     //player1 serialization
+        //     ObjectOutputStream out1 = new ObjectOutputStream(fileOut1);
+        //     out1.writeObject(player1);
+        //     out1.close();
+        //     fileOut1.close();
+
+        //     //player2 serialization
+        //     ObjectOutputStream out2 = new ObjectOutputStream(fileOut2);
+        //     out2.writeObject(player2);
+        //     fileOut2.close();
+
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
     }
 
     private boolean loadSave() {
-//        if (SAVE_FILE.exists()) {
-//            try {
-//                // TODO bonus 2 : deserialize players
-//
-//                return true;
-//            } catch (IOException | ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        // if (SAVE_FILE.exists()) {
+        //     try {
+        //         // TODO bonus 2 : deserialize players
+
+        //         //deserialize player1
+        //         FileInputStream fileIn1 = new FileInputStream("player1.ser");
+        //         ObjectInputStream in1 = new ObjectInputStream(fileIn1);
+        //         player1 = (Player) in1.readObject();
+        //         in1.close();
+        //         fileIn1.close();
+
+        //         //deserialize player2
+        //         FileInputStream fileIn2 = new FileInputStream("player2.ser");
+        //         ObjectInputStream in2 = new ObjectInputStream(fileIn2);
+        //         player2 = (AIPlayer) in2.readObject();
+        //         in2.close();
+        //         fileIn2.close();
+
+        //         return true;
+        //     } catch (IOException | ClassNotFoundException e) {
+        //         e.printStackTrace();
+        //     }
+        // }
         return false;
     }
 

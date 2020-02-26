@@ -20,7 +20,7 @@ public class ShipState {
         if (!struck){
             this.struck = true;
             this.ship.addStrike();
-        }
+        } //do nothing if already struck
     }
 
     public boolean isStruck(){
